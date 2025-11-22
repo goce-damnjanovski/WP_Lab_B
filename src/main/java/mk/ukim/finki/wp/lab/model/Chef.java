@@ -15,7 +15,7 @@ public class Chef {
     private String firstName;
     private String lastName;
     private String bio;
-    private List<Dish> dishes;
+    private List<Dish> dishes =  new ArrayList<>();
     private List<Rating> ratings = new ArrayList<>();
 
     public void addRating(Dish dish, int rating) {

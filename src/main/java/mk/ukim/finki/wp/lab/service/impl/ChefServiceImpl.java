@@ -44,7 +44,7 @@ public class ChefServiceImpl implements ChefService {
 
         if (currentDish != null && !dishes.contains(currentDish)) {
             dishes.add(currentDish);
-            chef.setDishes(dishes);
+//            chef.setDishes(dishes);
         }
         return chefRepository.save(chef);
     }
@@ -53,8 +53,8 @@ public class ChefServiceImpl implements ChefService {
     public Chef addRatingToChef(Long chefId, Dish dish, int rating) {
         Chef chef = chefRepository.findById(chefId)
                 .orElseThrow(() -> new RuntimeException("Chef not found"));
-        chef.addRating(dish, rating); // додава нов рејтинг во листата ratings на шефот
-        chefRepository.save(chef);     // зачувува ги промените
+        chef.addRating(dish, rating);
+        chefRepository.save(chef);
         return chef;
     }
 }

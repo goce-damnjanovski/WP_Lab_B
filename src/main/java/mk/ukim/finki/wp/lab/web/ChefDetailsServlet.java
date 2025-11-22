@@ -21,12 +21,12 @@ public class ChefDetailsServlet extends HttpServlet {
 
     private final SpringTemplateEngine templateEngine;
     private final ChefService chefService;
-    private final DishService dishService; // <- додај го
+    private final DishService dishService;
 
     public ChefDetailsServlet(SpringTemplateEngine templateEngine, ChefService chefService, DishService dishService) {
         this.templateEngine = templateEngine;
         this.chefService = chefService;
-        this.dishService = dishService; // <- инјектирај
+        this.dishService = dishService;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ChefDetailsServlet extends HttpServlet {
             Long idOfChef = Long.parseLong(idOfChefStr);
             int rating = Integer.parseInt(ratingStr);
 
-            Dish dish = dishService.findByDishId(idOfDish); // сега работи
+            Dish dish = dishService.findByDishId(idOfDish);
 
             if (dish != null) {
                 chefService.addDishToChef(idOfChef, dish.getDishId());

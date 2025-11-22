@@ -48,7 +48,7 @@
     <h2>Select dish:</h2>
     <form action="/chefDetails" method="POST">
         <!-- ID на избраниот шеф -->
-        <input type="hidden" name="idOfChef" th:value="${idOFChef}">
+        <input type="hidden" name="idOfChef" th:value="${idOfChef}">
 
         <!-- Прикажи ги сите јадења како radio копчиња -->
         <div th:each="dish : ${dishes}">

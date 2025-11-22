@@ -1,6 +1,5 @@
 package mk.ukim.finki.wp.lab.web;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,9 +15,6 @@ import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @WebServlet(name = "DishServlet", urlPatterns = "/dish")
 public class DishServlet extends HttpServlet {
@@ -42,7 +38,7 @@ public class DishServlet extends HttpServlet {
                 .buildExchange(req, resp);
 
         String idOfChefStr = req.getParameter("idOfChef");
-        if (idOfChefStr == null || idOfChefStr.isEmpty()) {
+        if (idOfChefStr == null || idOfChefStr.isEmpty() || idOfChefStr.equals("null")) {
             resp.sendRedirect("/listChefs"); // fallback ако нема шеф
             return;
         }
@@ -52,7 +48,7 @@ public class DishServlet extends HttpServlet {
 
         WebContext context = new WebContext(webExchange);
         context.setVariable("dishes", dishService.listDishes());
-        context.setVariable("idOFChef", idOfChef); // важно за hidden input
+        context.setVariable("idOfChef", idOfChef); // важно за hidden input
         context.setVariable("nameOfChef", chef.getFirstName() + " " + chef.getLastName());
         context.setVariable("chef", chef);
 
@@ -63,31 +59,24 @@ public class DishServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idOfChefStr = req.getParameter("idOfChef");
         String idOfDish = req.getParameter("idOfDish");
-        String ratingStr = req.getParameter("rating");
 
-        if (idOfChefStr == null || idOfDish == null || ratingStr == null) {
+        // Ако не е избрано јадење – врати се на страната со јадења
+        if (idOfDish == null || idOfDish.isEmpty()) {
             resp.sendRedirect("/dish?idOfChef=" + idOfChefStr);
             return;
         }
 
-        try {
-            Long idOfChef = Long.parseLong(idOfChefStr);
-            int rating = Integer.parseInt(ratingStr);
+        Long idOfChef = Long.parseLong(idOfChefStr);
+        Dish dish = dishService.findByDishId(idOfDish);
 
-            Dish dish = dishService.findByDishId(idOfDish); // <- ТУКА е промената
-
-            if (dish != null) {
-                chefService.addDishToChef(idOfChef, dish.getDishId());
-                chefService.addRatingToChef(idOfChef, dish, rating);
-            }
-
-            resp.sendRedirect("/chefDetails?idOfChef=" + idOfChefStr);
-
-        } catch (NumberFormatException e) {
-            resp.sendRedirect("/dish?idOfChef=" + idOfChefStr);
+        if (dish != null) {
+            chefService.addDishToChef(idOfChef, dish.getDishId());
+            // rating се проверува од страна на HTML required, па тука не проверуваме дополнително
+            chefService.addRatingToChef(idOfChef, dish, Integer.parseInt(req.getParameter("rating")));
         }
-    }
 
+        resp.sendRedirect("/chefDetails?idOfChef=" + idOfChefStr);
+    }
 
 }
 
