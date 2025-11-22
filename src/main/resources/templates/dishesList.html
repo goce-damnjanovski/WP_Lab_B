@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Add Dish to Chef</title>
+    <style type="text/css">
+        body {
+            width: 800px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        section {
+            float: left;
+            margin: 0 1.5%;
+            width: 63%;
+        }
+
+        aside {
+            float: right;
+            margin: 0 1.5%;
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Select the Dish to add to the Chef</h1>
+</header>
+<section>
+    <h2>Select dish:</h2>
+    <form action="/chefDetails" method="POST">
+        <!-- ID на избраниот шеф -->
+        <input type="hidden" name="idOfChef" th:value="${idOFChef}">
+
+        <!-- Прикажи ги сите јадења како radio копчиња -->
+        <div th:each="dish : ${dishes}">
+            <label>
+                <input type="radio" name="idOfDish" th:value="${dish.getDishId()}">
+                <span th:text="${dish.getName()}"></span>
+                (<span th:text="${dish.getCuisine()}"></span>,
+                <span th:text="${dish.getPreparationTime()}"></span> min)
+            </label><br/>
+        </div>
+
+        <br/>
+
+        <!-- Поле за внес на rating -->
+        <label for="rating">Rating (1-5): </label>
+<!--        <input type="number" id="rating" name="rating" min="1" max="5" required>-->
+        <input type="number" id="rating" name="rating" min="1" max="5" required autocomplete="off">
+
+
+        <br/><br/>
+        <input type="submit" value="Add dish">
+    </form>
+</section>
+<aside>
+    <table>
+        <tr>
+            <td><b>Chef ID</b></td>
+            <td th:text="${idOFChef}"><!-- Display selected chefId --></td>
+        </tr>
+        <tr>
+            <td><b>Chef Name</b></td>
+            <td th:text="${nameOfChef}"><!-- Display chef name --></td>
+        </tr>
+    </table>
+</aside>
+</body>
+</html>

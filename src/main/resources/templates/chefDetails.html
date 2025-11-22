@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Chef Details</title>
+    <style type="text/css">
+        body {
+            width: 800px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px;
+            margin: 5px 0;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .buttons form {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Chef: <span th:text="${nameOfChef}"></span></h1>
+</header>
+
+<section>
+    <h2>Bio: <span th:text="${bioofChef}"></span></h2>
+
+    <h2>Dishes prepared by this chef:</h2>
+    <ul th:each="dish : ${dishes}">
+        <li>
+            <span th:text="${dish.name}"></span>
+            (<span th:text="${dish.cuisine}"></span>,
+            <span th:text="${dish.preparationTime}"></span> min
+            <span th:each="rating : ${ratings}" th:if="${rating.dish.dishId == dish.dishId}">
+                , Rating: <span th:text="${rating.rate}"></span> stars
+            </span>)
+        </li>
+    </ul>
+
+    <!-- Buttons -->
+    <div class="buttons">
+        <!-- Button to choose another dish for the same chef -->
+        <form th:action="@{/dish}" method="get">
+            <input type="hidden" name="idOfChef" th:value="${chef.id}">
+            <button type="submit">Choose another dish</button>
+        </form>
+
+        <!-- Button to choose a new chef -->
+        <form th:action="@{/listChefs}" method="get">
+            <button type="submit">Choose a new chef</button>
+        </form>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Restaurant Chefs - Welcome to Our Restaurant</title>
+    <style type="text/css">
+        body {
+            width: 800px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to Our Restaurant</h1>
+</header>
+<main>
+    <h2>Choose a chef:</h2>
+    <form action="/dish" method="POST">
+        <input th:each="chef : ${chefs}" type="radio" name="idOfChef"
+               th:value="${chef.getId()}" style="white-space: pre"
+               th:utext="'Name: ' + ${chef.getFirstName()} + ' ' + ${chef.getLastName()}
+               + ', Bio: ' + ${chef.getBio()} + '<br />'">
+        <input type="submit" value="Submit">
+    </form>
+</main>
+</body>
+</html>
