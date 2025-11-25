@@ -49,33 +49,27 @@
 </header>
 
 <section>
-    <h2>Bio: <span th:text="${bioofChef}"></span></h2>
+    <h2>Bio:</h2>
+    <p th:text="${bioofChef}"></p>
 
     <h2>Dishes prepared by this chef:</h2>
     <ul th:each="dish : ${dishes}">
         <li>
-            <span th:text="${dish.name}"></span>
-            (<span th:text="${dish.cuisine}"></span>,
-            <span th:text="${dish.preparationTime}"></span> min
-            <span th:each="rating : ${ratings}" th:if="${rating.dish.dishId == dish.dishId}">
-                , Rating: <span th:text="${rating.rate}"></span> stars
-            </span>)
+            <span th:text="${dish.name} + ' (' + ${dish.cuisine} + ', ' + ${dish.preparationTime} + ' min, Rating: ' + ${chef.getScoreForDish(dish)} + ')'"></span>
         </li>
     </ul>
-
-    <!-- Buttons -->
-    <div class="buttons">
-        <!-- Button to choose another dish for the same chef -->
-        <form th:action="@{/dish}" method="get">
-            <input type="hidden" name="idOfChef" th:value="${chef.id}">
-            <button type="submit">Choose another dish</button>
-        </form>
-
-        <!-- Button to choose a new chef -->
-        <form th:action="@{/listChefs}" method="get">
-            <button type="submit">Choose a new chef</button>
-        </form>
-    </div>
 </section>
+
+<section class="buttons">
+    <form action="/dish" method="GET">
+        <input type="hidden" name="idOfChef" th:value="${idOfChef}">
+        <button type="submit">Add More Dishes</button>
+    </form>
+
+    <form action="/listChefs" method="GET">
+        <button type="submit">Back to Chef List</button>
+    </form>
+</section>
+
 </body>
 </html>

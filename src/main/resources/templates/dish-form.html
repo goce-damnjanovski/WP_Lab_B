@@ -1,0 +1,28 @@
+<div xmlns:th="http://www.thymeleaf.org">
+  <h1 th:text="${editMode ? 'Edit Dish' : 'Add New Dish'}"></h1>
+
+  <form th:action="@{${editMode ? '/dishes/edit/' + dish.id : '/dishes/add'}}" method="post">
+    <div>
+      <label>Dish ID:</label>
+      <input type="text" name="dishId" th:value="${dish != null ? dish.dishId : ''}" required>
+    </div>
+
+    <div>
+      <label>Name:</label>
+      <input type="text" name="name" th:value="${dish != null ? dish.name : ''}" required>
+    </div>
+
+    <div>
+      <label>Cuisine:</label>
+      <input type="text" name="cuisine" th:value="${dish != null ? dish.cuisine : ''}" required>
+    </div>
+
+    <div>
+      <label>Preparation Time (min):</label>
+      <input type="number" name="preparationTime" th:value="${dish != null ? dish.preparationTime : ''}" required>
+    </div>
+
+    <button type="submit">Save</button>
+    <a href="/dishes">Back</a>
+  </form>
+</div>

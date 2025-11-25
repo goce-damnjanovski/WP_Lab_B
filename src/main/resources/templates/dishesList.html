@@ -3,84 +3,73 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Add Dish to Chef</title>
+    <title>Dishes</title>
     <style type="text/css">
-        body {
-            width: 800px;
-            margin: auto;
-            font-family: Arial, sans-serif;
-        }
-
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        table, td, th {
-            border: 1px solid black;
-            padding: 10px;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        section {
-            float: left;
-            margin: 0 1.5%;
-            width: 63%;
-        }
-
-        aside {
-            float: right;
-            margin: 0 1.5%;
-            width: 30%;
-        }
+        body { width: 800px; margin: auto; font-family: Arial, sans-serif; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        table, td, th { border: 1px solid black; padding: 10px; }
+        th { background-color: #4CAF50; color: white; }
+        section { float: left; margin: 0 1.5%; width: 63%; }
+        aside { float: right; margin: 0 1.5%; width: 30%; }
+        .dish-buttons { display: inline-block; margin-left: 10px; }
+        .dish-item { margin-bottom: 10px; }
+        .top-buttons { margin-bottom: 20px; }
+        .top-buttons a button { padding: 5px 10px; margin-right: 10px; }
     </style>
 </head>
 <body>
 <header>
-    <h1>Select the Dish to add to the Chef</h1>
+    <h1 th:text="${idOfChef != null} ? 'Select the Dish to add to the Chef' : 'All Dishes'"></h1>
 </header>
+
 <section>
-    <h2>Select dish:</h2>
-    <form action="/chefDetails" method="POST">
-        <!-- ID на избраниот шеф -->
+    <div class="top-buttons" th:if="${idOfChef == null}">
+        <!-- Add New Dish button only in admin mode -->
+        <a th:href="@{/dishes/dish-form}">
+            <button type="button">Add New Dish</button>
+        </a>
+    </div>
+
+    <!-- CHEF MODE: Select dish with radio buttons -->
+    <form th:if="${idOfChef != null}" action="/chefDetails" method="POST">
         <input type="hidden" name="idOfChef" th:value="${idOfChef}">
-
-        <!-- Прикажи ги сите јадења како radio копчиња -->
-        <div th:each="dish : ${dishes}">
+        <div th:each="dish : ${dishes}" class="dish-item">
             <label>
-                <input type="radio" name="idOfDish" th:value="${dish.getDishId()}">
-                <span th:text="${dish.getName()}"></span>
-                (<span th:text="${dish.getCuisine()}"></span>,
-                <span th:text="${dish.getPreparationTime()}"></span> min)
-            </label><br/>
+                <input type="radio" name="idOfDish" th:value="${dish.dishId}" required>
+                <span th:text="${dish.name} + ' (' + ${dish.cuisine} + ', ' + ${dish.preparationTime} + ' min)'"></span>
+            </label>
+            <br/>
         </div>
-
-        <br/>
-
-        <!-- Поле за внес на rating -->
         <label for="rating">Rating (1-5): </label>
-<!--        <input type="number" id="rating" name="rating" min="1" max="5" required>-->
         <input type="number" id="rating" name="rating" min="1" max="5" required autocomplete="off">
-
-
-        <br/><br/>
-        <input type="submit" value="Add dish">
+        <br/>
+        <input type="submit" value="Add dish to Chef">
     </form>
+
+    <!-- ADMIN MODE: List dishes with Edit/Delete buttons -->
+    <div th:if="${idOfChef == null}" th:each="dish : ${dishes}" class="dish-item">
+        <span th:text="${dish.name} + ' (' + ${dish.cuisine} + ', ' + ${dish.preparationTime} + ' min)'"></span>
+        <span class="dish-buttons">
+            <a th:href="@{'/dishes/dish-form/' + ${dish.id}}">
+                <button type="button">Edit</button>
+            </a>
+            <form th:action="@{'/dishes/delete/' + ${dish.id}}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </span>
+        <br/>
+    </div>
 </section>
-<aside>
+
+<aside th:if="${idOfChef != null}">
     <table>
         <tr>
             <td><b>Chef ID</b></td>
-            <td th:text="${idOFChef}"><!-- Display selected chefId --></td>
+            <td th:text="${idOfChef}"></td>
         </tr>
         <tr>
             <td><b>Chef Name</b></td>
-            <td th:text="${nameOfChef}"><!-- Display chef name --></td>
+            <td th:text="${nameOfChef}"></td>
         </tr>
     </table>
 </aside>

@@ -1,4 +1,4 @@
-package mk.ukim.finki.wp.lab.web;
+package mk.ukim.finki.wp.lab.web.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mk.ukim.finki.wp.lab.model.Chef;
 import mk.ukim.finki.wp.lab.model.Dish;
+import mk.ukim.finki.wp.lab.model.Rating;
 import mk.ukim.finki.wp.lab.service.ChefService;
 import mk.ukim.finki.wp.lab.service.DishService;
 import org.thymeleaf.context.WebContext;
@@ -18,7 +19,6 @@ import java.io.IOException;
 
 @WebServlet(name = "ChefDetailsServlet", urlPatterns = "/chefDetails")
 public class ChefDetailsServlet extends HttpServlet {
-
     private final SpringTemplateEngine templateEngine;
     private final ChefService chefService;
     private final DishService dishService;
@@ -35,18 +35,31 @@ public class ChefDetailsServlet extends HttpServlet {
                 .buildApplication(getServletContext())
                 .buildExchange(req, resp);
 
-        Long idOfChef = Long.parseLong(req.getParameter("idOfChef"));
+        long idOfChef = -1L;
+
+        try{
+            idOfChef = Long.parseLong(req.getParameter("idOfChef"));
+        } catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+
         Chef chef = chefService.findById(idOfChef);
+        if(chef == null){
+            resp.sendRedirect("/listChefs");
+            return;
+        }
 
         WebContext context = new WebContext(webExchange);
-        context.setVariable("chef", chef);
+        context.setVariable("chef", chef); // Додај го овој ред
         context.setVariable("nameOfChef", chef.getFirstName() + " " + chef.getLastName());
         context.setVariable("bioofChef", chef.getBio());
         context.setVariable("dishes", chef.getDishes());
         context.setVariable("ratings", chef.getRatings());
+        context.setVariable("idOfChef", chef.getId());
 
         templateEngine.process("chefDetails.html", context, resp.getWriter());
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -54,26 +67,20 @@ public class ChefDetailsServlet extends HttpServlet {
         String idOfDish = req.getParameter("idOfDish");
         String ratingStr = req.getParameter("rating");
 
-        if (idOfChefStr == null || idOfDish == null || ratingStr == null) {
-            resp.sendRedirect("/dish?idOfChef=" + idOfChefStr);
+        if (idOfChefStr == null || idOfDish == null || ratingStr == null || ratingStr.isEmpty()) {
+            resp.sendRedirect("/chefDetails?idOfChef=" + idOfChefStr);
             return;
         }
 
-        try {
-            Long idOfChef = Long.parseLong(idOfChefStr);
-            int rating = Integer.parseInt(ratingStr);
+        long idOfChef = Long.parseLong(idOfChefStr);
+        int rating = Integer.parseInt(ratingStr);
 
-            Dish dish = dishService.findByDishId(idOfDish);
+        chefService.addDishToChef(idOfChef, idOfDish);
+        chefService.addRatingToDish(idOfChef, idOfDish, rating);
 
-            if (dish != null) {
-                chefService.addDishToChef(idOfChef, dish.getDishId());
-                chefService.addRatingToChef(idOfChef, dish, rating);
-            }
 
-            resp.sendRedirect("/chefDetails?idOfChef=" + idOfChefStr);
-
-        } catch (NumberFormatException e) {
-            resp.sendRedirect("/dish?idOfChef=" + idOfChefStr);
-        }
+        resp.sendRedirect("/chefDetails?idOfChef=" + idOfChef);
     }
+
 }
+

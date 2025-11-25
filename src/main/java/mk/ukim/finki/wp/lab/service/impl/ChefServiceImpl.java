@@ -37,24 +37,23 @@ public class ChefServiceImpl implements ChefService {
 
     @Override
     public Chef addDishToChef(Long chefId, String dishId) {
-        Chef chef = findById(chefId);
-        List<Dish> dishes = chef.getDishes();
-        Dish currentDish = dishRepository.findByDishId(dishId);
+        Chef chef = chefRepository.findById(chefId).orElse(null);
+        Dish dish = dishRepository.findByDishId(dishId);
 
+        if (chef == null || dish == null) return null;
 
-        if (currentDish != null && !dishes.contains(currentDish)) {
-            dishes.add(currentDish);
-//            chef.setDishes(dishes);
-        }
+        chef.getDishes().add(dish);
         return chefRepository.save(chef);
     }
 
     @Override
-    public Chef addRatingToChef(Long chefId, Dish dish, int rating) {
-        Chef chef = chefRepository.findById(chefId)
-                .orElseThrow(() -> new RuntimeException("Chef not found"));
-        chef.addRating(dish, rating);
-        chefRepository.save(chef);
-        return chef;
+    public Chef addRatingToDish(Long chefId, String dishId, int score) {
+        Chef chef = chefRepository.findById(chefId).orElseThrow();
+        Dish dish = dishRepository.findByDishId(dishId);
+
+        Rating rating = new Rating(dish, score);
+        chef.getRatings().add(rating);
+
+        return chefRepository.save(chef);
     }
 }

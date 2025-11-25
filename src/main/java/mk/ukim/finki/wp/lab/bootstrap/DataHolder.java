@@ -22,10 +22,10 @@ public class DataHolder {
         chefs.add(new Chef(3L, "Massimo", "Bottura", "An Italian chef celebrated for his creative reinterpretations of traditional Italian cuisine.", new ArrayList<>(), new ArrayList<>()));
         chefs.add(new Chef(4L, "Dominique", "Crenn", "A French chef recognized as the first woman in the U.S. to earn three Michelin stars.", new ArrayList<>(), new ArrayList<>()));
 
-        dishes.add(new Dish("D_001", "Sushi", "Japanese", 50));
-        dishes.add(new Dish("D_002", "Ratatouille", "French", 60));
-        dishes.add(new Dish("D_003", "Tacos al Pastor", "Mexican", 50));
-        dishes.add(new Dish("D_004", "Lasagna", "Italian", 90));
-        dishes.add(new Dish("D_005", "Paella", "Spanish", 75));
+        dishes.add(new Dish(Dish.getNextId(),"D_001", "Sushi", "Japanese", 50));
+        dishes.add(new Dish(Dish.getNextId(),"D_002", "Ratatouille", "French", 60));
+        dishes.add(new Dish(Dish.getNextId(),"D_003", "Tacos al Pastor", "Mexican", 50));
+        dishes.add(new Dish(Dish.getNextId(),"D_004", "Lasagna", "Italian", 90));
+        dishes.add(new Dish(Dish.getNextId(),"D_005", "Paella", "Spanish", 75));
     }
 }

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Rating {
     private Dish dish;
-    private int rate;
+    private int score;
 }

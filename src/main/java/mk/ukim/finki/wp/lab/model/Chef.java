@@ -15,11 +15,16 @@ public class Chef {
     private String firstName;
     private String lastName;
     private String bio;
-    private List<Dish> dishes =  new ArrayList<>();
+    private List<Dish> dishes = new ArrayList<>();
     private List<Rating> ratings = new ArrayList<>();
 
-    public void addRating(Dish dish, int rating) {
-        this.ratings.add(new Rating(dish, rating));
-    }
+    public int getScoreForDish(Dish dish) {
+        for (Rating r : ratings) {
+            if (r.getDish().getDishId().equals(dish.getDishId())) {
+                return r.getScore();
+            }
+        }
 
+        throw new RuntimeException("Rating not found for dish: " + dish.getDishId());
+    }
 }

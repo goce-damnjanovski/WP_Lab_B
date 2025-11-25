@@ -24,8 +24,9 @@ public class InMemoryChefRepository implements ChefRepository {
 
     @Override
     public Chef save(Chef chef) {
-        if(DataHolder.chefs.contains(chef)){
-            int index = DataHolder.chefs.indexOf(chef);
+        Optional<Chef> existing = findById(chef.getId());
+        if (existing.isPresent()) {
+            int index = DataHolder.chefs.indexOf(existing.get());
             DataHolder.chefs.set(index, chef);
         } else {
             DataHolder.chefs.add(chef);
