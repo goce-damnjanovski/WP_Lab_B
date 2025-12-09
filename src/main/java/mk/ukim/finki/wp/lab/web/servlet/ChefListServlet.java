@@ -15,7 +15,7 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 import java.io.IOException;
 
 
-@WebServlet(name="ChefListServlet", urlPatterns = "/listChefs")
+@WebServlet(name="ChefListServlet", urlPatterns = "/servlet/listChefs")
 public class ChefListServlet extends HttpServlet {
     private final SpringTemplateEngine templateEngine;
     private final ChefService chefService;
@@ -38,4 +38,6 @@ public class ChefListServlet extends HttpServlet {
         templateEngine.process("listChefs.html", context, resp.getWriter());
 
     }
+
+
 }

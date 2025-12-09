@@ -43,6 +43,7 @@ public class ChefServiceImpl implements ChefService {
         if (chef == null || dish == null) return null;
 
         chef.getDishes().add(dish);
+        dish.setChef(chef);
         return chefRepository.save(chef);
     }
 
@@ -51,9 +52,18 @@ public class ChefServiceImpl implements ChefService {
         Chef chef = chefRepository.findById(chefId).orElseThrow();
         Dish dish = dishRepository.findByDishId(dishId);
 
-        Rating rating = new Rating(dish, score);
+        Rating rating = new Rating();
+        rating.setDish(dish);
+        rating.setChef(chef);
+        rating.setScore(score);
+
         chef.getRatings().add(rating);
 
+        return chefRepository.save(chef);
+    }
+
+    @Override
+    public Chef saveChef(Chef chef) {
         return chefRepository.save(chef);
     }
 }

@@ -17,7 +17,7 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 
-@WebServlet(name = "ChefDetailsServlet", urlPatterns = "/chefDetails")
+@WebServlet(name = "ChefDetailsServlet", urlPatterns = "/servlet/chefDetails")
 public class ChefDetailsServlet extends HttpServlet {
     private final SpringTemplateEngine templateEngine;
     private final ChefService chefService;
@@ -50,7 +50,7 @@ public class ChefDetailsServlet extends HttpServlet {
         }
 
         WebContext context = new WebContext(webExchange);
-        context.setVariable("chef", chef); // Додај го овој ред
+        context.setVariable("chef", chef);
         context.setVariable("nameOfChef", chef.getFirstName() + " " + chef.getLastName());
         context.setVariable("bioofChef", chef.getBio());
         context.setVariable("dishes", chef.getDishes());
@@ -71,6 +71,7 @@ public class ChefDetailsServlet extends HttpServlet {
             resp.sendRedirect("/chefDetails?idOfChef=" + idOfChefStr);
             return;
         }
+
 
         long idOfChef = Long.parseLong(idOfChefStr);
         int rating = Integer.parseInt(ratingStr);

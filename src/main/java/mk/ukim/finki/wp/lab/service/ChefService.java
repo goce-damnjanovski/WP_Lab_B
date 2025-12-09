@@ -10,4 +10,5 @@ public interface ChefService {
     Chef findById(Long id);
     Chef addDishToChef(Long chefId, String dishId);
     Chef addRatingToDish(Long chefId, String dishId, int score);
+    Chef saveChef(Chef chef);
 }

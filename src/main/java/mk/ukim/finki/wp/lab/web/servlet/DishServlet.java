@@ -17,7 +17,7 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "DishServlet", urlPatterns = "/dish")
+@WebServlet(name = "DishServlet", urlPatterns = "/servlet/dish")
 public class DishServlet extends HttpServlet {
 
     private final SpringTemplateEngine templateEngine;
@@ -59,11 +59,13 @@ public class DishServlet extends HttpServlet {
             return;
         }
 
-        // Филтрирање на јадењата што веќе се кај шефот
+
         List<Dish> availableDishes = dishService.listDishes().stream()
                 .filter(dish -> chef.getDishes().stream()
                         .noneMatch(chefDish -> chefDish.getDishId().equals(dish.getDishId())))
                 .toList();
+
+
 
         WebContext context = new WebContext(webExchange);
         context.setVariable("dishes", availableDishes);
@@ -81,7 +83,6 @@ public class DishServlet extends HttpServlet {
         String idOfDish = req.getParameter("idOfDish");
         String ratingStr = req.getParameter("rating");
 
-        // Случај: само клик на "Add More Dishes" (нема idOfDish и rating)
         if (idOfChefStr != null && (idOfDish == null || idOfDish.isEmpty())) {
             long idOfChef;
             try {
@@ -110,7 +111,6 @@ public class DishServlet extends HttpServlet {
             return;
         }
 
-        // Случај: нема idOfChef → враќа на листа со шефови
         if (idOfChefStr == null || idOfDish == null || idOfChefStr.isEmpty() || idOfDish.isEmpty()) {
             resp.sendRedirect("/listChefs");
             return;
@@ -129,7 +129,7 @@ public class DishServlet extends HttpServlet {
                 }
             }
 
-            // По додавање на јадење (со или без рејтинг) враќа на страницата со детали на шефот
+
             resp.sendRedirect("/chefDetails?idOfChef=" + chefId);
 
         } catch (NumberFormatException e) {

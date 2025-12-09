@@ -5,16 +5,57 @@
     <meta charset="utf-8">
     <title>Dishes</title>
     <style type="text/css">
-        body { width: 800px; margin: auto; font-family: Arial, sans-serif; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        table, td, th { border: 1px solid black; padding: 10px; }
-        th { background-color: #4CAF50; color: white; }
-        section { float: left; margin: 0 1.5%; width: 63%; }
-        aside { float: right; margin: 0 1.5%; width: 30%; }
-        .dish-buttons { display: inline-block; margin-left: 10px; }
-        .dish-item { margin-bottom: 10px; }
-        .top-buttons { margin-bottom: 20px; }
-        .top-buttons a button { padding: 5px 10px; margin-right: 10px; }
+        body {
+            width: 800px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        section {
+            float: left;
+            margin: 0 1.5%;
+            width: 63%;
+        }
+
+        aside {
+            float: right;
+            margin: 0 1.5%;
+            width: 30%;
+        }
+
+        .dish-buttons {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .dish-item {
+            margin-bottom: 10px;
+        }
+
+        .top-buttons {
+            margin-bottom: 20px;
+        }
+
+        .top-buttons a button {
+            padding: 5px 10px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -22,16 +63,9 @@
     <h1 th:text="${idOfChef != null} ? 'Select the Dish to add to the Chef' : 'All Dishes'"></h1>
 </header>
 
-<section>
-    <div class="top-buttons" th:if="${idOfChef == null}">
-        <!-- Add New Dish button only in admin mode -->
-        <a th:href="@{/dishes/dish-form}">
-            <button type="button">Add New Dish</button>
-        </a>
-    </div>
-
-    <!-- CHEF MODE: Select dish with radio buttons -->
-    <form th:if="${idOfChef != null}" action="/chefDetails" method="POST">
+<section th:if="${idOfChef != null}">
+    <h2>Select a Dish for Chef <span th:text="${nameOfChef}"></span></h2>
+    <form th:action="@{/dish}" method="post">
         <input type="hidden" name="idOfChef" th:value="${idOfChef}">
         <div th:each="dish : ${dishes}" class="dish-item">
             <label>
@@ -45,21 +79,26 @@
         <br/>
         <input type="submit" value="Add dish to Chef">
     </form>
+</section>
 
-    <!-- ADMIN MODE: List dishes with Edit/Delete buttons -->
-    <div th:if="${idOfChef == null}" th:each="dish : ${dishes}" class="dish-item">
+<section th:if="${idOfChef == null}">
+    <h2>All Dishes (Admin)</h2>
+    <div th:each="dish : ${dishes}" class="dish-item">
         <span th:text="${dish.name} + ' (' + ${dish.cuisine} + ', ' + ${dish.preparationTime} + ' min)'"></span>
         <span class="dish-buttons">
-            <a th:href="@{'/dishes/dish-form/' + ${dish.id}}">
-                <button type="button">Edit</button>
-            </a>
+            <a th:href="@{'/dishes/dish-form/' + ${dish.id}}"><button type="button">Edit</button></a>
             <form th:action="@{'/dishes/delete/' + ${dish.id}}" method="post" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </span>
-        <br/>
+    </div>
+    <div class="top-buttons">
+        <a th:href="@{/dishes/dish-form}">
+            <button type="button">Add New Dish</button>
+        </a>
     </div>
 </section>
+
 
 <aside th:if="${idOfChef != null}">
     <table>
